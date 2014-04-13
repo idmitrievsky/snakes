@@ -32,7 +32,7 @@ static void filled_circle(Image &img, int center_x, int center_y)
 
 static std::pair<Image, Image> gradient(Image const &img, bool gauss = false, std::pair<Image, Image> *hess = 0)
 {
-    Image src = img;
+    Image src = img.clone();
     std::pair<Image, Image> grad;
     
     int ddepth = CV_64F;
