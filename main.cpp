@@ -6,15 +6,21 @@
 //  Copyright (c) 2014 Ivan Dmitrievsky. All rights reserved.
 //
 
+#include "json11.hpp"
 #include "snake.h"
 
 int main(int argc, const char * argv[])
 {
-    cv::Mat img = cv::imread("/Users/ivan/.supp/code/snakes/sample.png", CV_LOAD_IMAGE_ANYDEPTH);
+    std::string snake_config("/Users/ivan/.supp/code/snakes/snake.json");
     
-    auto snake = Snake({{20, 20}, {30, 30}, {40, 30}, {50, 40}, {90, 10}});
+    Snake snake(snake_config);
     
-    snake.print_and_save(img, "/Users/ivan/.supp/code/snakes/out.png");
+    snake.print_and_save("/Users/ivan/.supp/code/snakes/start.png");
+    for (int k = 0; k < 40; ++k)
+    {
+        snake.move();
+    }
+    snake.print_and_save("/Users/ivan/.supp/code/snakes/end.png");
     
     return 0;
 }

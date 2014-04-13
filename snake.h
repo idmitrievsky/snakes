@@ -11,21 +11,30 @@
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
 #include <vector>
 #include <string>
 #define  ARMA_DONT_USE_WRAPPER
 #include "armadillo"
 
-typedef arma::vec2 Pnt;
-typedef std::vector<Pnt> PntSeq;
+
+typedef arma::ivec2 Point;
 typedef cv::Mat Image;
 
 class Snake
 {
-    PntSeq nodes;
+    double tension;
+    double stiffness;
+    cv::Mat img;
+    
+    std::vector<double> xs;
+    std::vector<double> ys;
 public:
-    Snake(PntSeq _nodes);
-    void print_and_save(Image img, std::string const &output_file_path);
+    Snake(arma::vec6 snake_description);
+    Snake(arma::vec7 snake_description);
+    Snake(std::string json_file_path);
+    void move();
+    void print_and_save(std::string const &output_file_path);
 };
 
 #endif /* defined(__snakes__snake__) */
