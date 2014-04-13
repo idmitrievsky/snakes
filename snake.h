@@ -25,6 +25,11 @@ class Snake
 {
     double tension;
     double stiffness;
+    
+    double line_weight;
+    double edge_weight;
+    double term_weight;
+    
     cv::Mat img;
     
     std::vector<double> xs;

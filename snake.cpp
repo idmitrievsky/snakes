@@ -78,6 +78,9 @@ Snake::Snake(std::string json_file_path)
     
     tension = json["tension"].number_value();
     stiffness = json["stiffness"].number_value();
+    line_weight = json["line_weight"].number_value();
+    edge_weight = json["edge_weight"].number_value();
+    term_weight = json["term_weight"].number_value();
     
     bool radial_nodes_init = json.has_shape({{"center", json11::Json::ARRAY}}, err_text);
     
@@ -139,9 +142,8 @@ void Snake::move()
     
     for (int k = 0; k < nodes; ++k)
     {
-        double weight = 0.01;
-        xs[k] += dt * (grad.first.at<double>(xs[k], ys[k]) * (weight * hess.first.at<double>(xs[k], ys[k]) - 1));
-        ys[k] += dt * (grad.second.at<double>(xs[k], ys[k]) * (weight * hess.second.at<double>(xs[k], ys[k]) - 1));
+        xs[k] += dt * (grad.first.at<double>(xs[k], ys[k]) * (edge_weight * hess.first.at<double>(xs[k], ys[k]) - line_weight));
+        ys[k] += dt * (grad.second.at<double>(xs[k], ys[k]) * (edge_weight * hess.second.at<double>(xs[k], ys[k]) - line_weight));
     }
     
     double a = tension * dt / ds2, b = stiffness * dt / ds2;
