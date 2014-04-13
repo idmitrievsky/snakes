@@ -35,8 +35,6 @@ class Snake
     std::vector<double> xs;
     std::vector<double> ys;
 public:
-    Snake(arma::vec6 snake_description);
-    Snake(arma::vec7 snake_description);
     Snake(std::string json_file_path);
     void move();
     void print_and_save(std::string const &output_file_path);

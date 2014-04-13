@@ -54,18 +54,6 @@ static std::pair<Image, Image> gradient(Image const &img, bool gauss = false, st
     return grad;
 }
 
-Snake::Snake(arma::vec7 snake_description):tension(snake_description(5)), stiffness(snake_description(6))
-{
-    double step_x = std::fabs(snake_description(2) - snake_description(0)) / (snake_description(4) - 1);
-    double step_y = std::fabs(snake_description(3) - snake_description(1)) / (snake_description(4) - 1);
-    
-    for (int k = 0; k < snake_description(4); ++k)
-    {
-        xs.push_back(snake_description(0) + step_x * k);
-        ys.push_back(snake_description(1) + step_y * k);
-    }
-}
-
 Snake::Snake(std::string json_file_path)
 {
     std::ifstream json_file(json_file_path);
@@ -104,17 +92,6 @@ Snake::Snake(std::string json_file_path)
             xs.push_back(node[0].number_value());
             ys.push_back(node[1].number_value());
         }
-}
-
-Snake::Snake(arma::vec6 snake_description):tension(snake_description(4)), stiffness(snake_description(5))
-{
-    double step = 2 * 3.1415 / (snake_description(3) - 1);
-    
-    for (int k = 0; k < snake_description(3); ++k)
-    {
-        xs.push_back(snake_description(0) + snake_description(2) * std::cos(step * k));
-        ys.push_back(snake_description(1) + snake_description(2) * std::sin(step * k));
-    }
 }
 
 void Snake::print_and_save(std::string const &output_file_path)
