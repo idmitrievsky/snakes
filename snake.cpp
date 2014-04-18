@@ -19,7 +19,7 @@ static void line(Image &img, int start_x, int start_y, int end_x, int end_y)
     cv::Point start = cv::Point(start_x, start_y),
               end   = cv::Point(end_x, end_y);
     
-    cv::line(img, start, end, cv::Scalar(255, 255, 255), thickness, line_type);
+    cv::line(img, start, end, cv::Scalar(0, 0, 255), thickness, line_type);
 }
 
 static void filled_circle(Image &img, int center_x, int center_y)
@@ -27,7 +27,7 @@ static void filled_circle(Image &img, int center_x, int center_y)
     int thickness = 1, line_type = 8;
     cv::Point center = cv::Point(center_x, center_y);
     
-    cv::circle(img, center, 2, cv::Scalar(255, 255, 255), thickness, line_type);
+    cv::circle(img, center, 2, cv::Scalar(0, 0, 255), thickness, line_type);
 }
 
 static std::pair<Image, Image> gradient(Image const &img, bool gauss = false, std::pair<Image, Image> *hess = 0)
