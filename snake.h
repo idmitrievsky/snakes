@@ -30,7 +30,7 @@ class Snake
     double edge_weight;
     double term_weight;
     
-    cv::Mat img;
+    Image img;
     
     std::vector<double> xs;
     std::vector<double> ys;
