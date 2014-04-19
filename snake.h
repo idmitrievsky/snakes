@@ -30,6 +30,12 @@ class Snake
     double edge_weight;
     double term_weight;
     
+    bool fixed;
+    bool closed;
+    
+    double atom;
+    double tick;
+    
     Image img;
     std::pair<Image, Image> grad;
     std::pair<Image, Image> hess;
@@ -39,6 +45,9 @@ class Snake
 public:
     Snake(std::string json_file_path);
     void move();
+    
+    bool is_closed();
+    
     void print_and_save(std::string const &output_file_path);
 };
 

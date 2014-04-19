@@ -75,6 +75,17 @@ static std::pair<Image, Image> gradient(Image const &img, bool gauss = false, st
     return grad;
 }
 
+std::string Snake::image_path()
+{
+    return img_path;
+}
+
+
+bool Snake::is_closed()
+{
+    return closed;
+}
+
 Snake::Snake(std::string json_file_path)
 {
     std::ifstream json_file(json_file_path);
@@ -91,6 +102,10 @@ Snake::Snake(std::string json_file_path)
     line_weight = json["line_weight"].number_value();
     edge_weight = json["edge_weight"].number_value();
     term_weight = json["term_weight"].number_value();
+    fixed       = json["fixed"].bool_value();
+    closed      = json["closed"].bool_value();
+    atom        = json["atom"].number_value();
+    tick        = json["tick"].number_value();
     
     bool radial_nodes_init = json.has_shape({{"center", json11::Json::ARRAY}}, err_text);
     
@@ -134,8 +149,9 @@ void Snake::move()
     int nodes = (int)xs.size();
     
     arma::mat penta = arma::zeros<arma::mat>(nodes, nodes);
+
+    double ds2 = atom * atom;
     
-    double ds = 1.0, ds2 = ds * ds, dt = 0.05;
     
     for (int k = 0; k < nodes; ++k)
     {
@@ -143,7 +159,7 @@ void Snake::move()
         ys[k] += dt * (grad.second.at<double>(xs[k], ys[k]) * (edge_weight * hess.second.at<double>(xs[k], ys[k]) - line_weight));
     }
     
-    double a = tension * dt / ds2, b = stiffness * dt / ds2;
+    double a = tension * tick / ds2, b = stiffness * tick / ds2;
     double p = b, q = -a - 4 * b, r = 1 + 2 * a + 6 * b;
     std::vector<double> coeffs = {p, q, r, q, p};
     
@@ -161,7 +177,7 @@ void Snake::move()
     arma::solve(new_xs, penta, _xs);
     arma::solve(new_ys, penta, _ys);
     
-    for (int k = 0; k < nodes - 1; ++k)
+    for (int k = fixed; k < nodes - fixed; ++k)
     {
         xs[k] = new_xs[k];
         ys[k] = new_ys[k];
