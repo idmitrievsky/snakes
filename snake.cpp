@@ -134,10 +134,10 @@ Snake::Snake(std::string json_file_path)
     if (radial_nodes_init)
     {
         int nodes_num = json["nodes_num"].int_value();
-        double step = 2 * 3.1415 / (nodes_num - 1),
-        center_x = json["center"][0].number_value(),
-        center_y = json["center"][1].number_value(),
-        radius = json["radius"].number_value();
+        double step   = 2 * 3.1415 / (nodes_num - 1),
+        center_x      = json["center"][0].number_value(),
+        center_y      = json["center"][1].number_value(),
+        radius        = json["radius"].number_value();
         
         for (int k = 0; k < nodes_num; ++k)
         {
