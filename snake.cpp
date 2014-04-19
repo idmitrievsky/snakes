@@ -175,6 +175,15 @@ void Snake::update()
 
     double ds2 = atom * atom;
     
+    if (is_closed())
+    {
+        double x = (xs[0] + xs[nodes - 1]) / 2;
+        double y = (ys[0] + ys[nodes - 1]) / 2;
+        xs[0] = xs[nodes - 1] = x;
+        ys[0] = ys[nodes - 1] = y;
+    }
+    
+    arma::vec x_force(nodes), y_force(nodes);
     
     for (int k = 0; k < nodes; ++k)
     {
@@ -201,6 +210,4 @@ void Snake::update()
         xs[k] = new_xs[k];
         ys[k] = new_ys[k];
     }
-    xs[nodes - 1] = new_xs[0];
-    ys[nodes - 1] = new_ys[0];
 }
