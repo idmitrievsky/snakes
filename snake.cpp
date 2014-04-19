@@ -129,9 +129,10 @@ Snake::Snake(std::string json_file_path)
     atom        = json["atom"].number_value();
     tick        = json["tick"].number_value();
     
-    bool radial_nodes_init = json.has_shape({{"center", json11::Json::ARRAY}}, err_text);
+    bool radial_init = json.has_shape({{"center", json11::Json::ARRAY}}, err_text);
+    bool explicit_init = json.has_shape({{"nodes", json11::Json::ARRAY}}, err_text);
     
-    if (radial_nodes_init)
+    if (radial_init)
     {
         int nodes_num = json["nodes_num"].int_value();
         double step   = 2 * 3.1415 / (nodes_num - 1),
@@ -145,7 +146,7 @@ Snake::Snake(std::string json_file_path)
             ys.push_back(center_y + radius * std::sin(step * k));
         }
     }
-    else
+    if (explicit_init)
         for (auto &node: json["nodes"].array_items())
         {
             xs.push_back(node[0].number_value());
