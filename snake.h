@@ -46,6 +46,12 @@ public:
     Snake(std::string json_file_path);
     void move();
     
+    void set_xs(std::vector<double> _xs);
+    void set_ys(std::vector<double> _ys);
+    
+    std::vector<double> get_xs() const;
+    std::vector<double> get_ys() const;
+    
     bool is_closed();
     
     void print_and_save(std::string const &output_file_path);

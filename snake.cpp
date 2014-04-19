@@ -80,6 +80,25 @@ std::string Snake::image_path()
     return img_path;
 }
 
+void Snake::set_xs(std::vector<double> _xs)
+{
+    xs = _xs;
+}
+
+void Snake::set_ys(std::vector<double> _ys)
+{
+    ys = _ys;
+}
+
+std::vector<double> Snake::get_xs() const
+{
+    return xs;
+}
+
+std::vector<double> Snake::get_ys() const
+{
+    return ys;
+}
 
 bool Snake::is_closed()
 {
