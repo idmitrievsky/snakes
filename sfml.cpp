@@ -27,7 +27,7 @@ void sfml_loop(Snake &snake)
     unsigned long snake_size = 0;
     std::vector<double> xs(snake_size), ys(snake_size);
     
-    bool inited =  false, pressed = false;
+    bool inited =  false, play = false;
     std::vector<sf::Vertex> snake_scheme;
     snake_scheme.push_back(sf::Vertex({0,0}, sf::Color::Red));
     
@@ -38,8 +38,6 @@ void sfml_loop(Snake &snake)
         while (window.pollEvent(event))
         {
             if (event.type == sf::Event::Closed)
-                window.close();
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
                 window.close();
             
             if (event.type == sf::Event::MouseMoved)
@@ -52,7 +50,11 @@ void sfml_loop(Snake &snake)
             
             if (event.type == sf::Event::KeyPressed && snake_scheme.size() > 2)
             {
-                pressed = true;
+                if (event.key.code == sf::Keyboard::Escape)
+                    window.close();
+                if (event.key.code == sf::Keyboard::Space)
+                    play = !play;
+                
                 if (!inited)
                 {
                     if (snake.is_closed())
@@ -76,7 +78,7 @@ void sfml_loop(Snake &snake)
             
         }
         
-        if (inited && pressed)
+        if (inited && play)
         {
             snake.update();
             xs = snake.get_xs(); ys = snake.get_ys();
@@ -85,7 +87,6 @@ void sfml_loop(Snake &snake)
                 snake_scheme[k].position.x = xs[k];
                 snake_scheme[k].position.y = ys[k];
             }
-            pressed = false;
         }
         
         window.draw(sprite);
