@@ -36,6 +36,7 @@ class Snake
     double atom;
     double tick;
     
+    std::string img_path;
     Image img;
     std::pair<Image, Image> grad;
     std::pair<Image, Image> hess;
@@ -45,6 +46,8 @@ class Snake
 public:
     Snake(std::string json_file_path);
     void move();
+    
+    std::string image_path();
     
     void set_xs(std::vector<double> _xs);
     void set_ys(std::vector<double> _ys);

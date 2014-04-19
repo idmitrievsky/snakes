@@ -33,6 +33,7 @@ static void filled_circle(Image &img, int center_x, int center_y)
 static std::pair<Image, Image> gradient(Image const &img, bool gauss = false, std::pair<Image, Image> *hess = 0)
 {
     Image src = img.clone();
+    cv::cvtColor(src, src, CV_BGR2GRAY);
     std::pair<Image, Image> grad;
     
     int ddepth = CV_64F;
@@ -113,7 +114,8 @@ Snake::Snake(std::string json_file_path)
     
     auto json = json11::Json::parse(json_string, err_text);
     
-    img = cv::imread(json["img_path"].string_value(), CV_LOAD_IMAGE_GRAYSCALE);
+    img_path = json["img_path"].string_value();
+    img = cv::imread(img_path);
     
     tension = json["tension"].number_value();
     stiffness = json["stiffness"].number_value();
