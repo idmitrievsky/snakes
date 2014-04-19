@@ -117,9 +117,10 @@ Snake::Snake(std::string json_file_path)
     img_path = json["img_path"].string_value();
     img = cv::imread(img_path);
     
-    tension = json["tension"].number_value();
-    stiffness = json["stiffness"].number_value();
     grad = gradient(img, true, &hess);
+    
+    tension     = json["tension"].number_value();
+    stiffness   = json["stiffness"].number_value();
     line_weight = json["line_weight"].number_value();
     edge_weight = json["edge_weight"].number_value();
     term_weight = json["term_weight"].number_value();
@@ -165,7 +166,7 @@ void Snake::print_and_save(std::string const &output_file_path)
     cv::imwrite(output_file_path, img_copy);
 }
 
-void Snake::move()
+void Snake::update()
 {
     int nodes = (int)xs.size();
     
@@ -185,12 +186,8 @@ void Snake::move()
     std::vector<double> coeffs = {p, q, r, q, p};
     
     for (int k = 0; k < nodes; ++k)
-    {
         for (int j = 0; j < 5; ++j)
-        {
             penta(k, (nodes + k + j - 2) % nodes) = coeffs[j];
-        }
-    }
     
     arma::vec _xs(xs), _ys(ys);
     arma::vec new_xs(nodes), new_ys(nodes);

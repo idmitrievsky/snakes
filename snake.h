@@ -45,7 +45,6 @@ class Snake
     std::vector<double> ys;
 public:
     Snake(std::string json_file_path);
-    void move();
     
     std::string image_path();
     
@@ -57,6 +56,7 @@ public:
     
     bool is_closed();
     
+    void update();
     void print_and_save(std::string const &output_file_path);
 };
 
