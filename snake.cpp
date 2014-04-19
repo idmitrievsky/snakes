@@ -36,19 +36,40 @@ static std::pair<Image, Image> gradient(Image const &img, bool gauss = false, st
     std::pair<Image, Image> grad;
     
     int ddepth = CV_64F;
-    
-    if (gauss)
-    {
-        GaussianBlur(src, src, cv::Size(3, 3), 0);
-    }
 
+//    Sobel(src, grad.first, ddepth, 1, 0, 3);
+//    Sobel(src, grad.second, ddepth, 0, 1, 3);
+    
     Scharr(src, grad.first, ddepth, 1, 0);
     Scharr(src, grad.second, ddepth, 0, 1);
     
+    if (gauss)
+        for (int k = 0; k < 2; ++k)
+        {
+            GaussianBlur(grad.first, grad.first, cv::Size(3, 3), 0);
+            GaussianBlur(grad.second, grad.second, cv::Size(3, 3), 0);
+        }
+    
+    cv::imwrite("/Users/ivan/.supp/code/snakes/grad_x.jpg", grad.first);
+    cv::imwrite("/Users/ivan/.supp/code/snakes/grad_y.jpg", grad.second);
+    
     if (hess)
     {
+//        Sobel(grad.first, hess->first, ddepth, 1, 0, 3);
+//        Sobel(grad.second, hess->second, ddepth, 0, 1, 3);
+        
         Scharr(grad.first, hess->first, ddepth, 1, 0);
         Scharr(grad.second, hess->second, ddepth, 0, 1);
+        
+        if (gauss)
+            for (int k = 0; k < 2; ++k)
+            {
+                GaussianBlur(hess->first, hess->first, cv::Size(3, 3), 0);
+                GaussianBlur(hess->second, hess->second, cv::Size(3, 3), 0);
+            }
+        
+        cv::imwrite("/Users/ivan/.supp/code/snakes/hess_x.jpg", hess->first);
+        cv::imwrite("/Users/ivan/.supp/code/snakes/hess_y.jpg", hess->second);
     }
     
     return grad;
