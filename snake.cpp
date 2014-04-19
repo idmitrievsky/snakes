@@ -106,6 +106,11 @@ bool Snake::is_closed()
     return closed;
 }
 
+int Snake::get_implicit()
+{
+    return implicit;
+}
+
 Snake::Snake(std::string json_file_path)
 {
     std::ifstream json_file(json_file_path);
@@ -126,6 +131,7 @@ Snake::Snake(std::string json_file_path)
     term_weight = json["term_weight"].number_value();
     fixed       = json["fixed"].bool_value();
     closed      = json["closed"].bool_value();
+    implicit    = json["implicit"].int_value();
     atom        = json["atom"].number_value();
     tick        = json["tick"].number_value();
     

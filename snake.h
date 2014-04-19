@@ -33,6 +33,8 @@ class Snake
     bool fixed;
     bool closed;
     
+    int implicit;
+    
     double atom;
     double tick;
     
@@ -55,6 +57,7 @@ public:
     std::vector<double> get_ys() const;
     
     bool is_closed();
+    int get_implicit();
     
     void update();
     void print_and_save(std::string const &output_file_path);
