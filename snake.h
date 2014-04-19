@@ -31,6 +31,8 @@ class Snake
     double term_weight;
     
     Image img;
+    std::pair<Image, Image> grad;
+    std::pair<Image, Image> hess;
     
     std::vector<double> xs;
     std::vector<double> ys;

@@ -66,6 +66,7 @@ Snake::Snake(std::string json_file_path)
     
     tension = json["tension"].number_value();
     stiffness = json["stiffness"].number_value();
+    grad = gradient(img, true, &hess);
     line_weight = json["line_weight"].number_value();
     edge_weight = json["edge_weight"].number_value();
     term_weight = json["term_weight"].number_value();
@@ -111,9 +112,7 @@ void Snake::move()
 {
     int nodes = (int)xs.size();
     
-    std::pair<Image, Image> hess;
     arma::mat penta = arma::zeros<arma::mat>(nodes, nodes);
-    std::pair<Image, Image> grad = gradient(img, false, &hess);
     
     double ds = 1.0, ds2 = ds * ds, dt = 0.05;
     
