@@ -177,8 +177,8 @@ void Snake::update()
     
     for (int k = 0; k < nodes; ++k)
     {
-        xs[k] += dt * (grad.first.at<double>(xs[k], ys[k]) * (edge_weight * hess.first.at<double>(xs[k], ys[k]) - line_weight));
-        ys[k] += dt * (grad.second.at<double>(xs[k], ys[k]) * (edge_weight * hess.second.at<double>(xs[k], ys[k]) - line_weight));
+        x_force(k) = tick * (grad.first.at<double>(xs[k], ys[k]) * (edge_weight * hess.first.at<double>(xs[k], ys[k]) - line_weight));
+        y_force(k) = tick * (grad.second.at<double>(xs[k], ys[k]) * (edge_weight * hess.second.at<double>(xs[k], ys[k]) - line_weight));
     }
     
     double a = tension * tick / ds2, b = stiffness * tick / ds2;
@@ -192,8 +192,8 @@ void Snake::update()
     arma::vec _xs(xs), _ys(ys);
     arma::vec new_xs(nodes), new_ys(nodes);
     
-    arma::solve(new_xs, penta, _xs);
-    arma::solve(new_ys, penta, _ys);
+    arma::solve(new_xs, penta, _xs + x_force);
+    arma::solve(new_ys, penta, _ys + y_force);
     
     for (int k = fixed; k < nodes - fixed; ++k)
     {
