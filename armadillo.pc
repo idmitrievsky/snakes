@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib64
+includedir=/usr/include
+
+Name: Armadillo
+Description: Armadillo Library
+Version: 4.200
+Requires: atlas
+Libs: -L/usr/lib64 -larmadillo -lm 
+Cflags: -I/usr/include

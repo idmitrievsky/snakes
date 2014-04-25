@@ -1,0 +1,11 @@
+prefix=/usr
+exec_prefix=/usr
+libdir=/usr/lib64
+includedir=/usr/include
+
+Name: Atlas
+Description: Atlas Library
+Version: 4.200
+Requires: atlas
+Libs: -L/usr/lib64/atlas -latlas -lcblas -lclapack -lm 
+Cflags: -I/usr/include
