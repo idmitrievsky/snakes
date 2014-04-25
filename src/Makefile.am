@@ -4,7 +4,8 @@ AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" $(SNAKES_CFLAGS) \
-	-std=c++0x
+	-I$(JSON11_SRCDIR) \
+	-std=c++11
 
 AM_CFLAGS =\
 	 -Wall\
@@ -12,12 +13,13 @@ AM_CFLAGS =\
 
 bin_PROGRAMS = snakes
 
-graphcut_SOURCES = \
+snakes_SOURCES = \
 	main.cpp \
-	snakes.cpp \
-	snakes.h \
+	snake.cpp \
+	snake.h \
 	sfml.cpp \
-	sfml.h
+	sfml.h \
+	$(JSON11_SRCDIR)/json11.cpp
 
 snakes_LDFLAGS = 
 

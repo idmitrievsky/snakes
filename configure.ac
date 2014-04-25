@@ -12,15 +12,9 @@ AC_PROG_CXX
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
-PKG_CHECK_MODULES(SNAKES, [sfml])
+PKG_CHECK_MODULES(SNAKES, [sfml-all opencv armadillo])
 
-
-
-
-
-
-
-
+AC_SUBST(JSON11_SRCDIR)
 
 AC_OUTPUT([
 Makefile
