@@ -1,0 +1,1 @@
+PKG_CONFIG_PATH=. JSON11_SRCDIR=../../json11/ ./configure
