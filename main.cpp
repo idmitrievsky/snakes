@@ -10,14 +10,12 @@
 #include "json11.hpp"
 #include "snake.h"
 
-int main(int argc, const char * argv[])
-{
-    std::string snake_config("/Users/ivan/.supp/code/snakes/snake.json");
-    
-    Snake snake(snake_config);
+int main(int argc, const char* argv[]) {
+  std::string snake_config("/Users/ivan/.supp/code/snakes/snake.json");
 
-    sfml_loop(snake);
-        
-    return 0;
+  Snake snake(snake_config);
+
+  sfml_loop(snake);
+
+  return 0;
 }
-
