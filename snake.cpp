@@ -105,39 +105,16 @@ Snake::Snake(std::string json_file_path) {
 
   grad = gradient(img, true, &hess);
 
-  tension = json["tension"].number_value();
-  stiffness = json["stiffness"].number_value();
+  tension     = json["tension"].number_value();
+  stiffness   = json["stiffness"].number_value();
+  atom        = json["atom"].number_value();
+  closed      = json["closed"].bool_value();
+  implicit    = json["implicit"].int_value();
   line_weight = json["line_weight"].number_value();
   edge_weight = json["edge_weight"].number_value();
   term_weight = json["term_weight"].number_value();
-  fixed = json["fixed"].bool_value();
-  closed = json["closed"].bool_value();
-  implicit = json["implicit"].int_value();
-  atom = json["atom"].number_value();
-  tick = json["tick"].number_value();
-
-  bool radial_init =
-      json.has_shape({ { "center", json11::Json::ARRAY } }, err_text);
-  bool explicit_init =
-      json.has_shape({ { "nodes", json11::Json::ARRAY } }, err_text);
-
-  if (radial_init) {
-    int nodes_num = json["nodes_num"].int_value();
-    double step = 2 * 3.1415 / (nodes_num - 1),
-           center_x = json["center"][0].number_value(),
-           center_y = json["center"][1].number_value(),
-           radius = json["radius"].number_value();
-
-    for (int k = 0; k < nodes_num; ++k) {
-      xs.push_back(center_x + radius * std::cos(step * k));
-      ys.push_back(center_y + radius * std::sin(step * k));
-    }
-  }
-  if (explicit_init)
-    for (auto &node : json["nodes"].array_items()) {
-      xs.push_back(node[0].number_value());
-      ys.push_back(node[1].number_value());
-    }
+  tick        = json["tick"].number_value();
+  fixed       = json["fixed"].bool_value();
 }
 
 /**
