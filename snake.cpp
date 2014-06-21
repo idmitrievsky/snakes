@@ -17,7 +17,7 @@ static void line(Image &img, int start_x, int start_y, int end_x, int end_y) {
   int thickness = 1, line_type = 8;
   cv::Point start = cv::Point(start_x, start_y), end = cv::Point(end_x, end_y);
   cv::Scalar red(0, 0, 255);
-  
+
   cv::line(img, start, end, red, thickness, line_type);
 }
 
@@ -25,10 +25,19 @@ static void filled_circle(Image &img, int center_x, int center_y, int rad) {
   int thickness = 1, line_type = 8;
   cv::Point center = cv::Point(center_x, center_y);
   cv::Scalar red(0, 0, 255);
-  
+
   cv::circle(img, center, rad, red, thickness, line_type);
 }
 
+/**
+ *  Calculates img gradient and hessian
+ *
+ *  @param img             source image
+ *  @param gauss           blur gradient or not
+ *  @param hess            calculate hessian or not
+ *
+ *  @return pair of images, each representing one of gradient components
+ */
 static std::pair<Image, Image> gradient(Image const &img, bool gauss = false,
                                         std::pair<Image, Image> *hess = 0) {
   Image src = img.clone();
@@ -36,9 +45,6 @@ static std::pair<Image, Image> gradient(Image const &img, bool gauss = false,
   std::pair<Image, Image> grad;
 
   int ddepth = CV_64F;
-
-  //    Sobel(src, grad.first, ddepth, 1, 0, 3);
-  //    Sobel(src, grad.second, ddepth, 0, 1, 3);
 
   Scharr(src, grad.first, ddepth, 1, 0);
   Scharr(src, grad.second, ddepth, 0, 1);
@@ -53,9 +59,6 @@ static std::pair<Image, Image> gradient(Image const &img, bool gauss = false,
   cv::imwrite("/Users/ivan/.supp/code/snakes/grad_y.jpg", grad.second);
 
   if (hess) {
-    //        Sobel(grad.first, hess->first, ddepth, 1, 0, 3);
-    //        Sobel(grad.second, hess->second, ddepth, 0, 1, 3);
-
     Scharr(grad.first, hess->first, ddepth, 1, 0);
     Scharr(grad.second, hess->second, ddepth, 0, 1);
 
@@ -86,6 +89,9 @@ bool Snake::is_closed() { return closed; }
 
 int Snake::get_implicit() { return implicit; }
 
+/**
+ *  Initiates snake instance from json config
+ */
 Snake::Snake(std::string json_file_path) {
   std::ifstream json_file(json_file_path);
   std::string json_string((std::istreambuf_iterator<char>(json_file)),
@@ -134,6 +140,11 @@ Snake::Snake(std::string json_file_path) {
     }
 }
 
+/**
+ *  Saves current snake state on an image to file
+ *
+ *  @param output_file_path path to desired output file
+ */
 void Snake::print_and_save(std::string const &output_file_path) {
   Image img_copy = img.clone();
 
@@ -145,6 +156,9 @@ void Snake::print_and_save(std::string const &output_file_path) {
   cv::imwrite(output_file_path, img_copy);
 }
 
+/**
+ *  Move snake to the next state
+ */
 void Snake::update() {
   int nodes = (int)xs.size();
 
