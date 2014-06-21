@@ -99,6 +99,12 @@ Snake::Snake(std::string json_file_path) {
   img_path = json["img_path"].string_value();
   img = cv::imread(img_path);
 
+  if (!img.data)
+  {
+    std::cout << "Could not open or find the image specified in config.\n";
+    std::exit(0);
+  }
+  
   grad = gradient(img, 1, &hess);
 
   tension     = json["tension"].number_value();
