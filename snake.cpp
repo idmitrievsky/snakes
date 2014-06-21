@@ -33,27 +33,25 @@ static void filled_circle(Image &img, int center_x, int center_y, int rad) {
  *  Calculates img gradient and hessian
  *
  *  @param img             source image
- *  @param gauss           blur gradient or not
+ *  @param gauss           times gradient gets blurred
  *  @param hess            calculate hessian or not
  *
  *  @return pair of images, each representing one of gradient components
  */
-static std::pair<Image, Image> gradient(Image const &img, bool gauss = false,
+static std::pair<Image, Image> gradient(Image const &img, unsigned gauss = 0,
                                         std::pair<Image, Image> *hess = 0) {
   Image src = img.clone();
   cv::cvtColor(src, src, CV_BGR2GRAY);
   std::pair<Image, Image> grad;
-
   int ddepth = CV_64F;
 
   Scharr(src, grad.first, ddepth, 1, 0);
   Scharr(src, grad.second, ddepth, 0, 1);
 
-  if (gauss)
-    for (int k = 0; k < 2; ++k) {
-      GaussianBlur(grad.first, grad.first, cv::Size(3, 3), 0);
-      GaussianBlur(grad.second, grad.second, cv::Size(3, 3), 0);
-    }
+  for (int k = 0; k < gauss; ++k) {
+    GaussianBlur(grad.first, grad.first, cv::Size(3, 3), 0);
+    GaussianBlur(grad.second, grad.second, cv::Size(3, 3), 0);
+  }
 
   cv::imwrite("/Users/ivan/.supp/code/snakes/grad_x.jpg", grad.first);
   cv::imwrite("/Users/ivan/.supp/code/snakes/grad_y.jpg", grad.second);
@@ -62,12 +60,10 @@ static std::pair<Image, Image> gradient(Image const &img, bool gauss = false,
     Scharr(grad.first, hess->first, ddepth, 1, 0);
     Scharr(grad.second, hess->second, ddepth, 0, 1);
 
-    if (gauss)
-      for (int k = 0; k < 2; ++k) {
-        GaussianBlur(hess->first, hess->first, cv::Size(3, 3), 0);
-        GaussianBlur(hess->second, hess->second, cv::Size(3, 3), 0);
-      }
-
+    for (int k = 0; k < gauss; ++k) {
+      GaussianBlur(hess->first, hess->first, cv::Size(3, 3), 0);
+      GaussianBlur(hess->second, hess->second, cv::Size(3, 3), 0);
+    }
     cv::imwrite("/Users/ivan/.supp/code/snakes/hess_x.jpg", hess->first);
     cv::imwrite("/Users/ivan/.supp/code/snakes/hess_y.jpg", hess->second);
   }
@@ -103,7 +99,7 @@ Snake::Snake(std::string json_file_path) {
   img_path = json["img_path"].string_value();
   img = cv::imread(img_path);
 
-  grad = gradient(img, true, &hess);
+  grad = gradient(img, 1, &hess);
 
   tension     = json["tension"].number_value();
   stiffness   = json["stiffness"].number_value();
