@@ -21,12 +21,12 @@ static void line(Image &img, int start_x, int start_y, int end_x, int end_y) {
   cv::line(img, start, end, red, thickness, line_type);
 }
 
-static void filled_circle(Image &img, int center_x, int center_y) {
+static void filled_circle(Image &img, int center_x, int center_y, int rad) {
   int thickness = 1, line_type = 8;
   cv::Point center = cv::Point(center_x, center_y);
   cv::Scalar red(0, 0, 255);
   
-  cv::circle(img, center, 2, red, thickness, line_type);
+  cv::circle(img, center, rad, red, thickness, line_type);
 }
 
 static std::pair<Image, Image> gradient(Image const &img, bool gauss = false,
@@ -137,10 +137,10 @@ Snake::Snake(std::string json_file_path) {
 void Snake::print_and_save(std::string const &output_file_path) {
   Image img_copy = img.clone();
 
-  filled_circle(img_copy, xs[0], ys[0]);
+  filled_circle(img_copy, xs[0], ys[0], 2);
   for (unsigned k = 1; k < xs.size(); ++k) {
     line(img_copy, xs[k - 1], ys[k - 1], xs[k], ys[k]);
-    filled_circle(img_copy, xs[k], ys[k]);
+    filled_circle(img_copy, xs[k], ys[k], 2);
   }
   cv::imwrite(output_file_path, img_copy);
 }
