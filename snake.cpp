@@ -109,9 +109,6 @@ static std::pair<Image, Image> gradient(Image const &img, unsigned gauss = 0) {
   cv::imwrite("/Users/ivan/.supp/code/snakes/grad_x.jpg", grad.first);
   cv::imwrite("/Users/ivan/.supp/code/snakes/grad_y.jpg", grad.second);
 
-  save_double_heat_map(grad.first, "/Users/ivan/.supp/code/snakes/hgx.jpg");
-  save_double_heat_map(grad.second, "/Users/ivan/.supp/code/snakes/hgy.jpg");
-
   return grad;
 }
 
@@ -136,7 +133,6 @@ static Image hessian(Image const &img, unsigned gauss = 0) {
   for (int k = 0; k < gauss; ++k) {
     GaussianBlur(hessian, hessian, cv::Size(3, 3), 0);
   }
-  save_double_heat_map(hessian, "/Users/ivan/.supp/code/snakes/hh.jpg");
   cv::imwrite("/Users/ivan/.supp/code/snakes/hess.jpg", hessian);
 
   return hessian;
@@ -196,7 +192,11 @@ Snake::Snake(std::string json_file_path) {
   }
 
   grad = gradient(img, 1);
+  save_double_heat_map(grad.first, "/Users/ivan/.supp/code/snakes/hgx.jpg");
+  save_double_heat_map(grad.second, "/Users/ivan/.supp/code/snakes/hgy.jpg");
+
   hess = hessian(img, 1);
+  save_double_heat_map(hess, "/Users/ivan/.supp/code/snakes/hh.jpg");
 
   tension     = json["tension"].number_value();
   stiffness   = json["stiffness"].number_value();
