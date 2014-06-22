@@ -47,7 +47,7 @@ static void save_double_heat_map(Image const &img, std::string const &path) {
     }
   }
 
-  cv::imwrite(output_file_path, heat_map);
+  cv::imwrite(path, heat_map);
 }
 
 static void line(Image &img, int start_x, int start_y, int end_x, int end_y) {
