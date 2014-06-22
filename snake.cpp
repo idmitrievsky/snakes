@@ -196,7 +196,7 @@ Snake::Snake(std::string json_file_path) {
   }
 
   grad = gradient(img, 1);
-  hess = hessian(img, 0);
+  hess = hessian(img, 1);
 
   tension     = json["tension"].number_value();
   stiffness   = json["stiffness"].number_value();
