@@ -37,12 +37,12 @@ static void save_double_heat_map(Image const &img, std::string const &path) {
   for (int i = 0; i < nrows; ++i) {
     for (int j = 0; j < ncols; ++j) {
       short val = (short)scaled_img.at<double>(i, j);
-      if (std::abs(val) < 5) {
-        heat_map.at<cv::Vec3b>(i, j) = cv::Vec3b(0, 255, 255);
-      } else if (val > 0) {
+      if (val > 0) {
         heat_map.at<cv::Vec3b>(i, j) = cv::Vec3b(0, 0, val);
       } else if (scaled_img.at<double>(i, j) < 0) {
         heat_map.at<cv::Vec3b>(i, j) = cv::Vec3b(-val, 0, 0);
+      } else {
+        heat_map.at<cv::Vec3b>(i, j) = cv::Vec3b(0, 255, 0);
       }
     }
   }
