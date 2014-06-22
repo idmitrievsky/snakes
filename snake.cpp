@@ -124,12 +124,6 @@ static Image hessian(Image const &img, unsigned gauss = 0) {
   cv::Sobel(src, dYY, CV_64F, 0, 2);
   cv::Sobel(src, dXY, CV_64F, 1, 1);
 
-  //  cv::Mat gau = cv::getGaussianKernel(11, -1, CV_64F);
-  //
-  //  cv::sepFilter2D(dXX, dXX, CV_64F, gau.t(), gau);
-  //  cv::sepFilter2D(dYY, dYY, CV_64F, gau.t(), gau);
-  //  cv::sepFilter2D(dXY, dXY, CV_64F, gau.t(), gau);
-
   for (int k = 0; k < gauss; ++k) {
     GaussianBlur(dXX, dXX, cv::Size(3, 3), 0);
     GaussianBlur(dXY, dXY, cv::Size(3, 3), 0);
