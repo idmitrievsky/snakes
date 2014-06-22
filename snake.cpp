@@ -251,11 +251,11 @@ void Snake::update() {
 
   for (int k = 0; k < nodes; ++k) {
     x_force(k) =
-        tick * (grad.first.at<double>(xs[k], ys[k]) *
-                (edge_weight * hess.at<double>(xs[k], ys[k]) - line_weight));
+        tick * (grad.first.at<double>(ys[k], xs[k]) *
+                (edge_weight * hess.at<double>(ys[k], xs[k]) - line_weight));
     y_force(k) =
-        tick * (grad.second.at<double>(xs[k], ys[k]) *
-                (edge_weight * hess.at<double>(xs[k], ys[k]) - line_weight));
+        tick * (grad.second.at<double>(ys[k], xs[k]) *
+                (edge_weight * hess.at<double>(ys[k], xs[k]) - line_weight));
   }
 
   arma::vec _xs(xs), _ys(ys);
