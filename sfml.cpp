@@ -64,22 +64,30 @@ void sfml_loop(Snake &snake) {
           else
             snake_scheme.pop_back();
 
-          snake_size = snake.get_implicit() * (snake_scheme.size() - 1) + 1;
+          int implicit_joints = snake.get_implicit();
+          
+          if (implicit_joints > 0) {
+            snake_size = implicit_joints * (snake_scheme.size() - 1) + 1;
+          } else {
+            snake_size = snake_scheme.size();
+          }
           xs.resize(snake_size);
           ys.resize(snake_size);
 
-          for (int k = 0; k < snake_scheme.size() - 1; ++k) {
-            auto x_diff =
-                (snake_scheme[k + 1].position.x - snake_scheme[k].position.x) /
-                snake.get_implicit();
-            auto y_diff =
-                (snake_scheme[k + 1].position.y - snake_scheme[k].position.y) /
-                snake.get_implicit();
-            for (int j = 0; j < snake.get_implicit(); ++j) {
-              xs[k * snake.get_implicit() + j] =
-                  snake_scheme[k].position.x + j * x_diff;
-              ys[k * snake.get_implicit() + j] =
-                  snake_scheme[k].position.y + j * y_diff;
+          if (implicit_joints > 0) {
+            for (int k = 0; k < snake_scheme.size() - 1; ++k) {
+              auto x_diff = (snake_scheme[k + 1].position.x -
+                             snake_scheme[k].position.x) /
+                            implicit_joints;
+              auto y_diff = (snake_scheme[k + 1].position.y -
+                             snake_scheme[k].position.y) /
+                            implicit_joints;
+              for (int j = 0; j < implicit_joints; ++j) {
+                xs[k * snake.get_implicit() + j] =
+                    snake_scheme[k].position.x + j * x_diff;
+                ys[k * snake.get_implicit() + j] =
+                    snake_scheme[k].position.y + j * y_diff;
+              }
             }
           }
           xs.back() = snake_scheme[snake_scheme.size() - 1].position.x;
