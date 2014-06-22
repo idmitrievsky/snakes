@@ -19,38 +19,34 @@ static Image invert_image(Image const &img) {
   return inverted_img;
 }
 
-static void save_double_heat_map(Image const &img, std::string const &output_file_path) {
+static void save_double_heat_map(Image const &img, std::string const &path) {
   double min, max;
   cv::minMaxLoc(img, &min, &max);
-  
-  if (std::abs(min) > std::abs(max))
-  {
+
+  if (std::abs(min) > std::abs(max)) {
     max = min;
   }
   max = std::abs(max);
-  
+
   Image scaled_img = (img / max) * 255;
-  
+
   int nrows = scaled_img.rows, ncols = scaled_img.cols;
-  
+
   Image heat_map(nrows, ncols, CV_8UC3);
-  
-  for (int i = 0; i < nrows; ++i)
-  {
-    for (int j = 0; j < ncols; ++j)
-    {
+
+  for (int i = 0; i < nrows; ++i) {
+    for (int j = 0; j < ncols; ++j) {
       short val = (short)scaled_img.at<double>(i, j);
       if (std::abs(val) < 5) {
         heat_map.at<cv::Vec3b>(i, j) = cv::Vec3b(0, 255, 255);
-      } else if (val > 0)
-      {
+      } else if (val > 0) {
         heat_map.at<cv::Vec3b>(i, j) = cv::Vec3b(0, 0, val);
       } else if (scaled_img.at<double>(i, j) < 0) {
         heat_map.at<cv::Vec3b>(i, j) = cv::Vec3b(-val, 0, 0);
       }
     }
   }
-  
+
   cv::imwrite(output_file_path, heat_map);
 }
 
@@ -96,9 +92,9 @@ static std::pair<Image, Image> gradient(Image const &img, unsigned gauss = 0) {
   cv::imwrite("/Users/ivan/.supp/code/snakes/grad_x.jpg", grad.first);
   cv::imwrite("/Users/ivan/.supp/code/snakes/grad_y.jpg", grad.second);
 
-  save_double_heat_map(grad.first, "/Users/ivan/.supp/code/snakes/gf_heat.jpg");
-  save_double_heat_map(grad.second, "/Users/ivan/.supp/code/snakes/gs_heat.jpg");
-  
+  save_double_heat_map(grad.first, "/Users/ivan/.supp/code/snakes/hgx.jpg");
+  save_double_heat_map(grad.second, "/Users/ivan/.supp/code/snakes/hgy.jpg");
+
   return grad;
 }
 
@@ -130,8 +126,8 @@ static Image hessian(Image const &img, unsigned gauss = 0) {
     GaussianBlur(hessian, hessian, cv::Size(3, 3), 0);
   }
   cv::imwrite("/Users/ivan/.supp/code/snakes/wat.jpg", hessian);
-  save_double_heat_map(hessian, "/Users/ivan/.supp/code/snakes/h_heat.jpg");
-  
+  save_double_heat_map(hessian, "/Users/ivan/.supp/code/snakes/hh.jpg");
+
   return hessian;
 }
 
@@ -183,8 +179,7 @@ Snake::Snake(std::string json_file_path) {
   img_path = json["img_path"].string_value();
   img = cv::imread(img_path);
 
-  if (!img.data)
-  {
+  if (!img.data) {
     std::cout << "Could not open or find the image specified in config.\n";
     std::exit(0);
   }
