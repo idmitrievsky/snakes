@@ -1,0 +1,17 @@
+{
+	"img_path" : "/Users/ivan/.supp/code/snakes/circle.jpg",
+	"tension" : 5,
+	"stiffness" : 0.01,
+
+	"line_weight" : -50,
+	"edge_weight" : 0.1,
+	"term_weight" : 0,
+
+	"atom" : 0.1,
+	"tick" : 0.0001,
+
+ 	"fixed" : false,
+ 	"closed" : true,
+ 	"implicit" : 5,
+ 	"threshold" : 5
+}
