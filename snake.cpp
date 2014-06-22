@@ -142,8 +142,8 @@ static Image hessian(Image const &img, unsigned gauss = 0) {
   for (int k = 0; k < gauss; ++k) {
     GaussianBlur(hessian, hessian, cv::Size(3, 3), 0);
   }
-  cv::imwrite("/Users/ivan/.supp/code/snakes/wat.jpg", hessian);
   save_double_heat_map(hessian, "/Users/ivan/.supp/code/snakes/hh.jpg");
+  cv::imwrite("/Users/ivan/.supp/code/snakes/hess.jpg", hessian);
 
   return hessian;
 }
