@@ -50,6 +50,23 @@ static void save_double_heat_map(Image const &img, std::string const &path) {
   cv::imwrite(path, heat_map);
 }
 
+static void abs_threshold(Image img, double threshold) {
+  double min, max;
+  cv::minMaxLoc(img, &min, &max);
+
+  if (std::abs(min) > std::abs(max)) {
+    max = min;
+  }
+  max = std::abs(max);
+  for (int i = 0; i < img.rows; ++i) {
+    for (int j = 0; j < img.cols; ++j) {
+      if (std::abs(img.at<double>(i, j)) < threshold * max / 255) {
+        img.at<double>(i, j) = 0;
+      }
+    }
+  }
+}
+
 static void line(Image &img, int start_x, int start_y, int end_x, int end_y) {
   int thickness = 1, line_type = 8;
   cv::Point start = cv::Point(start_x, start_y), end = cv::Point(end_x, end_y);
@@ -197,6 +214,11 @@ Snake::Snake(std::string json_file_path) {
   term_weight = json["term_weight"].number_value();
   tick        = json["tick"].number_value();
   fixed       = json["fixed"].bool_value();
+  threshold   = json["threshold"].number_value();
+
+  abs_threshold(grad.first, threshold);
+  abs_threshold(grad.second, threshold);
+  abs_threshold(hess, threshold);
 }
 
 /**

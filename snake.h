@@ -36,6 +36,8 @@ class Snake {
   double atom;
   double tick;
 
+  double threshold;
+  
   std::string img_path;
   Image img;
   std::pair<Image, Image> grad;
