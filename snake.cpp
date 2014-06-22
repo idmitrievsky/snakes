@@ -213,6 +213,9 @@ Snake::Snake(std::string json_file_path) {
   abs_threshold(grad.first, threshold);
   abs_threshold(grad.second, threshold);
   abs_threshold(hess, threshold);
+  save_double_heat_map(grad.first, "/Users/ivan/.supp/code/snakes/thgx.jpg");
+  save_double_heat_map(grad.second, "/Users/ivan/.supp/code/snakes/thgy.jpg");
+  save_double_heat_map(hess, "/Users/ivan/.supp/code/snakes/thh.jpg");
 }
 
 /**
