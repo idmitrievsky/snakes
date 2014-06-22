@@ -21,3 +21,4 @@ Energy-minimising curves that deform to fit image features
 - `term_weight (0)` – weight corresponding to termination functional
 - `tick (0.0001)` – time between sequential snake's states
 - `fixed (false)` – should snake's boundary joints be fixed or not
+- `threshold (5)` – value of smallest magnitude on a heat map
