@@ -39,7 +39,7 @@ class Snake {
   std::string img_path;
   Image img;
   std::pair<Image, Image> grad;
-  std::pair<Image, Image> hess;
+  Image hess;
   arma::mat pentamat;
 
   std::vector<double> xs;

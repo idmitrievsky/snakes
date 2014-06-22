@@ -13,6 +13,12 @@
 #include "json11.hpp"
 #include "snake.h"
 
+static Image invert_image(Image const &img) {
+  Image inverted_img;
+  cv::subtract(cv::Scalar::all(255), img, inverted_img);
+  return inverted_img;
+}
+
 static void line(Image &img, int start_x, int start_y, int end_x, int end_y) {
   int thickness = 1, line_type = 8;
   cv::Point start = cv::Point(start_x, start_y), end = cv::Point(end_x, end_y);
@@ -38,8 +44,7 @@ static void filled_circle(Image &img, int center_x, int center_y, int rad) {
  *
  *  @return pair of images, each representing one of gradient components
  */
-static std::pair<Image, Image> gradient(Image const &img, unsigned gauss = 0,
-                                        std::pair<Image, Image> *hess = 0) {
+static std::pair<Image, Image> gradient(Image const &img, unsigned gauss = 0) {
   Image src = img.clone();
   cv::cvtColor(src, src, CV_BGR2GRAY);
   std::pair<Image, Image> grad;
@@ -56,19 +61,39 @@ static std::pair<Image, Image> gradient(Image const &img, unsigned gauss = 0,
   cv::imwrite("/Users/ivan/.supp/code/snakes/grad_x.jpg", grad.first);
   cv::imwrite("/Users/ivan/.supp/code/snakes/grad_y.jpg", grad.second);
 
-  if (hess) {
-    Scharr(grad.first, hess->first, ddepth, 1, 0);
-    Scharr(grad.second, hess->second, ddepth, 0, 1);
+  return grad;
+}
 
-    for (int k = 0; k < gauss; ++k) {
-      GaussianBlur(hess->first, hess->first, cv::Size(3, 3), 0);
-      GaussianBlur(hess->second, hess->second, cv::Size(3, 3), 0);
-    }
-    cv::imwrite("/Users/ivan/.supp/code/snakes/hess_x.jpg", hess->first);
-    cv::imwrite("/Users/ivan/.supp/code/snakes/hess_y.jpg", hess->second);
+static Image hessian(Image const &img, unsigned gauss = 0) {
+  Image src = img.clone();
+  cv::cvtColor(src, src, CV_BGR2GRAY);
+  Image dXX, dYY, dXY, hessian;
+
+  cv::Sobel(src, dXX, CV_64F, 2, 0);
+  cv::Sobel(src, dYY, CV_64F, 0, 2);
+  cv::Sobel(src, dXY, CV_64F, 1, 1);
+
+  //  cv::Mat gau = cv::getGaussianKernel(11, -1, CV_64F);
+  //
+  //  cv::sepFilter2D(dXX, dXX, CV_64F, gau.t(), gau);
+  //  cv::sepFilter2D(dYY, dYY, CV_64F, gau.t(), gau);
+  //  cv::sepFilter2D(dXY, dXY, CV_64F, gau.t(), gau);
+
+  for (int k = 0; k < gauss; ++k) {
+    GaussianBlur(dXX, dXX, cv::Size(3, 3), 0);
+    GaussianBlur(dXY, dXY, cv::Size(3, 3), 0);
+    GaussianBlur(dYY, dYY, cv::Size(3, 3), 0);
   }
 
-  return grad;
+  hessian = dXX.mul(dYY) - dXY.mul(dXY);
+
+  hessian = invert_image(hessian);
+  for (int k = 0; k < gauss; ++k) {
+    GaussianBlur(hessian, hessian, cv::Size(3, 3), 0);
+  }
+  cv::imwrite("/Users/ivan/.supp/code/snakes/wat.jpg", hessian);
+  
+  return hessian;
 }
 
 std::string Snake::image_path() { return img_path; }
@@ -124,8 +149,9 @@ Snake::Snake(std::string json_file_path) {
     std::cout << "Could not open or find the image specified in config.\n";
     std::exit(0);
   }
-  
-  grad = gradient(img, 1, &hess);
+
+  grad = gradient(img, 1);
+  hess = hessian(img, 0);
 
   tension     = json["tension"].number_value();
   stiffness   = json["stiffness"].number_value();
@@ -172,13 +198,11 @@ void Snake::update() {
 
   for (int k = 0; k < nodes; ++k) {
     x_force(k) =
-        tick *
-        (grad.first.at<double>(xs[k], ys[k]) *
-         (edge_weight * hess.first.at<double>(xs[k], ys[k]) - line_weight));
+        tick * (grad.first.at<double>(xs[k], ys[k]) *
+                (edge_weight * hess.at<double>(xs[k], ys[k]) - line_weight));
     y_force(k) =
-        tick *
-        (grad.second.at<double>(xs[k], ys[k]) *
-         (edge_weight * hess.second.at<double>(xs[k], ys[k]) - line_weight));
+        tick * (grad.second.at<double>(xs[k], ys[k]) *
+                (edge_weight * hess.at<double>(xs[k], ys[k]) - line_weight));
   }
 
   arma::vec _xs(xs), _ys(ys);
