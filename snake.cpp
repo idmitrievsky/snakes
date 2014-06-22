@@ -77,6 +77,26 @@ void Snake::set_xs(std::vector<double> _xs) { xs = _xs; }
 
 void Snake::set_ys(std::vector<double> _ys) { ys = _ys; }
 
+void Snake::set_pentamat() {
+  int nodes = (int)xs.size();
+  double ds2 = atom * atom;
+  double ds4 = ds2 * ds2;
+
+  pentamat = arma::zeros<arma::mat>(nodes, nodes);
+
+  double a = tension * tick / ds2, b = stiffness * tick / ds4;
+  double p = b, q = -a - 4 * b, r = 1 + 2 * a + 6 * b;
+  std::vector<double> coeffs = { p, q, r, q, p };
+
+  for (int k = 0; k < nodes; ++k) {
+    for (int j = 0; j < 5; ++j) {
+      pentamat(k, (nodes + k + j - 2) % nodes) = coeffs[j];
+    }
+  }
+
+  pentamat = pentamat.i();
+}
+
 std::vector<double> Snake::get_xs() const { return xs; }
 
 std::vector<double> Snake::get_ys() const { return ys; }
@@ -141,10 +161,6 @@ void Snake::print_and_save(std::string const &output_file_path) {
 void Snake::update() {
   int nodes = (int)xs.size();
 
-  arma::mat penta = arma::zeros<arma::mat>(nodes, nodes);
-
-  double ds2 = atom * atom;
-
   if (is_closed()) {
     double x = (xs[0] + xs[nodes - 1]) / 2;
     double y = (ys[0] + ys[nodes - 1]) / 2;
@@ -165,19 +181,11 @@ void Snake::update() {
          (edge_weight * hess.second.at<double>(xs[k], ys[k]) - line_weight));
   }
 
-  double a = tension * tick / ds2, b = stiffness * tick / ds2;
-  double p = b, q = -a - 4 * b, r = 1 + 2 * a + 6 * b;
-  std::vector<double> coeffs = { p, q, r, q, p };
-
-  for (int k = 0; k < nodes; ++k)
-    for (int j = 0; j < 5; ++j)
-      penta(k, (nodes + k + j - 2) % nodes) = coeffs[j];
-
   arma::vec _xs(xs), _ys(ys);
   arma::vec new_xs(nodes), new_ys(nodes);
 
-  arma::solve(new_xs, penta, _xs + x_force);
-  arma::solve(new_ys, penta, _ys + y_force);
+  new_xs = pentamat * (_xs + x_force);
+  new_ys = pentamat * (_ys + y_force);
 
   for (int k = fixed; k < nodes - fixed; ++k) {
     xs[k] = new_xs[k];

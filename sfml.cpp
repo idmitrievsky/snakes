@@ -95,6 +95,7 @@ void sfml_loop(Snake &snake) {
           snake_scheme.resize(snake_size, { { 0, 0 }, sf::Color::Red });
           snake.set_xs(xs);
           snake.set_ys(ys);
+          snake.set_pentamat();
         }
         inited = true;
       }

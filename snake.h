@@ -40,6 +40,7 @@ class Snake {
   Image img;
   std::pair<Image, Image> grad;
   std::pair<Image, Image> hess;
+  arma::mat pentamat;
 
   std::vector<double> xs;
   std::vector<double> ys;
@@ -51,6 +52,7 @@ public:
 
   void set_xs(std::vector<double> _xs);
   void set_ys(std::vector<double> _ys);
+  void set_pentamat();
 
   std::vector<double> get_xs() const;
   std::vector<double> get_ys() const;
