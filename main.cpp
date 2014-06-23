@@ -11,7 +11,13 @@
 #include "snake.h"
 
 int main(int argc, const char* argv[]) {
-  std::string snake_config("/Users/ivan/.supp/code/snakes/snakes/snake.json");
+  
+  if (argc < 2)
+  {
+    exit(0);
+  }
+  
+  std::string snake_config(argv[1]);
 
   Snake snake(snake_config);
 
