@@ -34,7 +34,7 @@ class Snake {
   double tick;
 
   double threshold;
-  
+
   Image img;
   std::vector<uchar> raw_img;
   std::size_t raw_img_size;
@@ -46,8 +46,9 @@ class Snake {
   std::vector<double> ys;
 
   cv::VideoCapture vid;
-  
+
   void update_raw_img();
+
 public:
   Snake(std::string json_file_path);
 
@@ -55,7 +56,7 @@ public:
   void set_ys(std::vector<double> _ys);
   void set_pentamat();
   bool shift_frame(bool direction);
-  
+
   std::vector<double> get_xs() const;
   std::vector<double> get_ys() const;
   void *get_raw_img();

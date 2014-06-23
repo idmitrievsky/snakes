@@ -175,13 +175,9 @@ void Snake::update_raw_img() {
   cv::imencode(".bmp", raw_mat, raw_img);
 }
 
-void *Snake::get_raw_img() {
-  return raw_img.data();
-}
+void *Snake::get_raw_img() { return raw_img.data(); }
 
-std::size_t Snake::get_raw_img_size() {
-  return raw_img_size;
-}
+std::size_t Snake::get_raw_img_size() { return raw_img_size; }
 
 bool Snake::is_closed() { return closed; }
 
@@ -211,19 +207,20 @@ Snake::Snake(std::string json_file_path) {
   tick        = json["tick"].number_value();
   fixed       = json["fixed"].bool_value();
   threshold   = json["threshold"].number_value();
-  
+
   vid = cv::VideoCapture(vid_path);
-  
-  if(!vid.isOpened()) {
+
+  if (!vid.isOpened()) {
     std::cout << "Could not open or find the video specified in config.\n";
     std::exit(0);
   }
-  
-  img = cv::Mat(vid.get(CV_CAP_PROP_FRAME_HEIGHT), vid.get(CV_CAP_PROP_FRAME_WIDTH), vid.get(CV_CAP_PROP_FORMAT));
-  
+
+  img = cv::Mat(vid.get(CV_CAP_PROP_FRAME_HEIGHT),
+                vid.get(CV_CAP_PROP_FRAME_WIDTH), vid.get(CV_CAP_PROP_FORMAT));
+
   raw_img_size = img.total() * 4;
   raw_img = std::vector<uchar>(raw_img_size);
-  
+
   if (!shift_frame(true)) {
     std::cout << "Could not read the frame.\n";
     std::exit(0);
@@ -231,25 +228,23 @@ Snake::Snake(std::string json_file_path) {
 }
 
 bool Snake::shift_frame(bool direction) {
-  
-  if (!direction)
-  {
+
+  if (!direction) {
     int position = vid.get(CV_CAP_PROP_POS_FRAMES);
-    if (position < 1)
-    {
+    if (position < 1) {
       return true;
     }
     vid.set(CV_CAP_PROP_POS_FRAMES, position - 1);
   }
-  
+
   if (!vid.read(img)) {
     return false;
   }
   update_raw_img();
-  
+
   grad = gradient(img, 1);
   hess = hessian(img, 1);
-  
+
 #ifdef PRINT_META
   save_double_heat_map(grad.first, "/Users/ivan/.supp/code/snakes/hgx.jpg");
   save_double_heat_map(grad.second, "/Users/ivan/.supp/code/snakes/hgy.jpg");
@@ -258,7 +253,7 @@ bool Snake::shift_frame(bool direction) {
   abs_threshold(grad.first, threshold);
   abs_threshold(grad.second, threshold);
   abs_threshold(hess, threshold);
-  
+
 #ifdef PRINT_META
   save_double_heat_map(grad.first, "/Users/ivan/.supp/code/snakes/thgx.jpg");
   save_double_heat_map(grad.second, "/Users/ivan/.supp/code/snakes/thgy.jpg");
@@ -313,26 +308,26 @@ bool Snake::update() {
 
   forced_xs += x_dist;
   forced_ys += y_dist;
-  
+
 //  std::vector<double> prev_xs(xs), prev_ys(ys);
-  
+
   xs = (cv::Mat)(pentamat * forced_xs);
   ys = (cv::Mat)(pentamat * forced_ys);
-  
+
 //  double acc_x = 0, acc_y = 0;
 //  double eps = ???;
-//  
+//
 //  for (int k = 0; k < nodes; ++k)
 //  {
 //    acc_x += xs[k] - prev_xs[k];
 //    acc_y += ys[k] - prev_ys[k];
 //  }
 //  acc_x += acc_y; acc_x /= tick;
-//  
+//
 //  if (std::abs(acc_x) < eps)
 //  {
 //    return true;
 //  }
-  
+
   return false;
 }

@@ -53,7 +53,7 @@ void sfml_loop(Snake &snake) {
                          sf::Color::Red));
         }
       }
-      
+
       if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::Escape) {
           window.close();
@@ -61,17 +61,16 @@ void sfml_loop(Snake &snake) {
         if (event.key.code == sf::Keyboard::Space) {
           play = !play;
         }
-        if (event.key.code == sf::Keyboard::Left || event.key.code == sf::Keyboard::Right)
-        {
+        if (event.key.code == sf::Keyboard::Left ||
+            event.key.code == sf::Keyboard::Right) {
           bool direction = event.key.code == sf::Keyboard::Right;
           if (!snake.shift_frame(direction)) {
             window.close();
           }
           texture.loadFromMemory(snake.get_raw_img(), snake.get_raw_img_size());
         }
-
       }
-      
+
       if (event.type == sf::Event::KeyPressed && snake_scheme.size() > 2) {
         if (!inited) {
           if (snake.is_closed()) {
@@ -119,8 +118,7 @@ void sfml_loop(Snake &snake) {
 
     if (inited && play) {
       bool local_minima = snake.update();
-      if (local_minima)
-      {
+      if (local_minima) {
         window.close();
       }
       xs = snake.get_xs();
