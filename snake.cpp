@@ -243,7 +243,7 @@ bool Snake::next_frame() {
   save_double_heat_map(grad.first, "/Users/ivan/.supp/code/snakes/hgx.jpg");
   save_double_heat_map(grad.second, "/Users/ivan/.supp/code/snakes/hgy.jpg");
   save_double_heat_map(hess, "/Users/ivan/.supp/code/snakes/hh.jpg");
-# endif
+#endif
   abs_threshold(grad.first, threshold);
   abs_threshold(grad.second, threshold);
   abs_threshold(hess, threshold);
