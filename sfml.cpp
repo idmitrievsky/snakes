@@ -53,19 +53,21 @@ void sfml_loop(Snake &snake) {
                          sf::Color::Red));
 
       if (event.type == sf::Event::KeyPressed && snake_scheme.size() > 2) {
-        if (event.key.code == sf::Keyboard::Escape)
+        if (event.key.code == sf::Keyboard::Escape) {
           window.close();
-        if (event.key.code == sf::Keyboard::Space)
+        }
+        if (event.key.code == sf::Keyboard::Space) {
           play = !play;
 
         if (!inited) {
-          if (snake.is_closed())
+          if (snake.is_closed()) {
             snake_scheme.back() = snake_scheme.front();
-          else
+          } else {
             snake_scheme.pop_back();
+          }
 
           int implicit_joints = snake.get_implicit();
-          
+
           if (implicit_joints > 0) {
             snake_size = implicit_joints * (snake_scheme.size() - 1) + 1;
           } else {
