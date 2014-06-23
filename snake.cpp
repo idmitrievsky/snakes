@@ -237,7 +237,7 @@ void Snake::print_and_save(std::string const &output_file_path) {
 /**
  *  Move snake to the next state
  */
-void Snake::update() {
+bool Snake::update() {
   int nodes = (int)xs.size();
 
   if (is_closed()) {
@@ -268,4 +268,6 @@ void Snake::update() {
     xs[k] = new_xs[k];
     ys[k] = new_ys[k];
   }
+  
+  return false;
 }

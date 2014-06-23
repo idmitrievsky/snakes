@@ -62,7 +62,7 @@ public:
   bool is_closed();
   int get_implicit();
 
-  void update();
+  bool update();
   void print_and_save(std::string const &output_file_path);
 };
 

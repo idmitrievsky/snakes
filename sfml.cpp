@@ -58,6 +58,7 @@ void sfml_loop(Snake &snake) {
         }
         if (event.key.code == sf::Keyboard::Space) {
           play = !play;
+        }
 
         if (!inited) {
           if (snake.is_closed()) {
@@ -104,7 +105,11 @@ void sfml_loop(Snake &snake) {
     }
 
     if (inited && play) {
-      snake.update();
+      bool local_minima = snake.update();
+      if (local_minima)
+      {
+        window.close();
+      }
       xs = snake.get_xs();
       ys = snake.get_ys();
       for (int k = 0; k < snake_size; ++k) {
