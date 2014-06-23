@@ -14,10 +14,7 @@
 #include "opencv2/imgproc/imgproc.hpp"
 #include <vector>
 #include <string>
-#define ARMA_DONT_USE_WRAPPER
-#include "armadillo"
 
-typedef arma::ivec2 Point;
 typedef cv::Mat Image;
 
 class Snake {
@@ -42,7 +39,7 @@ class Snake {
   Image img;
   std::pair<Image, Image> grad;
   Image hess;
-  arma::mat pentamat;
+  cv::Mat pentamat;
 
   std::vector<double> xs;
   std::vector<double> ys;

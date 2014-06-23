@@ -150,7 +150,7 @@ void Snake::set_pentamat() {
   double ds2 = atom * atom;
   double ds4 = ds2 * ds2;
 
-  pentamat = arma::zeros<arma::mat>(nodes, nodes);
+  pentamat = cv::Mat::zeros(nodes, nodes, CV_64F);
 
   double a = tension * tick / ds2, b = stiffness * tick / ds4;
   double p = b, q = -a - 4 * b, r = 1 + 2 * a + 6 * b;
@@ -158,11 +158,11 @@ void Snake::set_pentamat() {
 
   for (int k = 0; k < nodes; ++k) {
     for (int j = 0; j < 5; ++j) {
-      pentamat(k, (nodes + k + j - 2) % nodes) = coeffs[j];
+      pentamat.at<double>(k, (nodes + k + j - 2) % nodes) = coeffs[j];
     }
   }
 
-  pentamat = pentamat.i();
+  pentamat = pentamat.inv();
 }
 
 std::vector<double> Snake::get_xs() const { return xs; }
@@ -248,27 +248,26 @@ bool Snake::update() {
     ys[0] = ys[nodes - 1] = y;
   }
 
-  arma::vec x_force(nodes), y_force(nodes);
+  cv::Mat x_dist(nodes, 1, CV_64F), y_dist(nodes, 1, CV_64F);
 
   for (int k = 0; k < nodes; ++k) {
-    x_force(k) =
-        tick * (grad.first.at<double>(ys[k], xs[k]) *
-                (edge_weight * hess.at<double>(ys[k], xs[k]) - line_weight));
-    y_force(k) =
-        tick * (grad.second.at<double>(ys[k], xs[k]) *
-                (edge_weight * hess.at<double>(ys[k], xs[k]) - line_weight));
+    double x_force =
+        grad.first.at<double>(ys[k], xs[k]) *
+        (edge_weight * hess.at<double>(ys[k], xs[k]) - line_weight);
+    double y_force =
+        grad.second.at<double>(ys[k], xs[k]) *
+        (edge_weight * hess.at<double>(ys[k], xs[k]) - line_weight);
+    x_dist.at<double>(k, 0) = tick * x_force;
+    y_dist.at<double>(k, 0) = tick * y_force;
   }
 
-  arma::vec _xs(xs), _ys(ys);
-  arma::vec new_xs(nodes), new_ys(nodes);
+  cv::Mat forced_xs(xs), forced_ys(ys);
 
-  new_xs = pentamat * (_xs + x_force);
-  new_ys = pentamat * (_ys + y_force);
+  forced_xs += x_dist;
+  forced_ys += y_dist;
 
-  for (int k = fixed; k < nodes - fixed; ++k) {
-    xs[k] = new_xs[k];
-    ys[k] = new_ys[k];
-  }
-  
+  xs = (cv::Mat)(pentamat * forced_xs);
+  ys = (cv::Mat)(pentamat * forced_ys);
+
   return false;
 }
