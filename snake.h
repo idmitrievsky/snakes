@@ -54,7 +54,7 @@ public:
   void set_xs(std::vector<double> _xs);
   void set_ys(std::vector<double> _ys);
   void set_pentamat();
-  bool next_frame();
+  bool shift_frame(bool direction);
   
   std::vector<double> get_xs() const;
   std::vector<double> get_ys() const;

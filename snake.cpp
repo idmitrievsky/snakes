@@ -224,13 +224,24 @@ Snake::Snake(std::string json_file_path) {
   raw_img_size = img.total() * 4;
   raw_img = std::vector<uchar>(raw_img_size);
   
-  if (!next_frame()) {
+  if (!shift_frame(true)) {
     std::cout << "Could not read the frame.\n";
     std::exit(0);
   }
 }
 
-bool Snake::next_frame() {
+bool Snake::shift_frame(bool direction) {
+  
+  if (!direction)
+  {
+    int position = vid.get(CV_CAP_PROP_POS_FRAMES);
+    if (position < 1)
+    {
+      return true;
+    }
+    vid.set(CV_CAP_PROP_POS_FRAMES, position - 1);
+  }
+  
   if (!vid.read(img)) {
     return false;
   }

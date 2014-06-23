@@ -61,9 +61,16 @@ void sfml_loop(Snake &snake) {
         if (event.key.code == sf::Keyboard::Space) {
           play = !play;
         }
+        if (event.key.code == sf::Keyboard::Left)
+        {
+          if (!snake.shift_frame(false)) {
+            window.close();
+          }
+          texture.loadFromMemory(snake.get_raw_img(), snake.get_raw_img_size());
+        }
         if (event.key.code == sf::Keyboard::Right)
         {
-          if (!snake.next_frame()) {
+          if (!snake.shift_frame(true)) {
             window.close();
           }
           texture.loadFromMemory(snake.get_raw_img(), snake.get_raw_img_size());
