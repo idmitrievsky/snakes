@@ -35,8 +35,9 @@ class Snake {
 
   double threshold;
   
-  std::string img_path;
   Image img;
+  std::vector<uchar> raw_img;
+  std::size_t raw_img_size;
   std::pair<Image, Image> grad;
   Image hess;
   cv::Mat pentamat;
@@ -44,17 +45,21 @@ class Snake {
   std::vector<double> xs;
   std::vector<double> ys;
 
+  cv::VideoCapture vid;
+  
+  void update_raw_img();
 public:
   Snake(std::string json_file_path);
-
-  std::string image_path();
 
   void set_xs(std::vector<double> _xs);
   void set_ys(std::vector<double> _ys);
   void set_pentamat();
-
+  bool next_frame();
+  
   std::vector<double> get_xs() const;
   std::vector<double> get_ys() const;
+  void *get_raw_img();
+  std::size_t get_raw_img_size();
 
   bool is_closed();
   int get_implicit();

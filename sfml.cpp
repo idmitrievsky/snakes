@@ -12,16 +12,13 @@
 #include "SFML/Graphics.hpp"
 
 void sfml_loop(Snake &snake) {
-  sf::Image image;
-  image.loadFromFile(snake.image_path());
-
-  sf::RenderWindow window({ image.getSize().x, image.getSize().y },
-                          snake.image_path(),
+  sf::Texture texture;
+  texture.loadFromMemory(snake.get_raw_img(), snake.get_raw_img_size());
+  sf::RenderWindow window({ texture.getSize().x, texture.getSize().y },
+                          "Snakes & Flies",
                           sf::Style::Titlebar | sf::Style::Close);
   window.setVerticalSyncEnabled(true);
 
-  sf::Texture texture;
-  texture.loadFromImage(image);
   sf::Sprite sprite;
   sprite.setTexture(texture);
 
@@ -63,6 +60,13 @@ void sfml_loop(Snake &snake) {
         }
         if (event.key.code == sf::Keyboard::Space) {
           play = !play;
+        }
+        if (event.key.code == sf::Keyboard::Right)
+        {
+          if (!snake.next_frame()) {
+            window.close();
+          }
+          texture.loadFromMemory(snake.get_raw_img(), snake.get_raw_img_size());
         }
 
         if (!inited) {

@@ -1,5 +1,5 @@
 {
-	"img_path" : "/Users/ivan/.supp/code/snakes/circle.jpg",
+	"vid_path" : "/Users/ivan/Downloads/output.mp4",
 	"tension" : 2,
 	"stiffness" : 0.01,
 
@@ -12,6 +12,6 @@
 
  	"fixed" : false,
  	"closed" : true,
- 	"implicit" : 5,
- 	"threshold" : 5
+ 	"implicit" : 4,
+ 	"threshold" : 20
 }

@@ -107,9 +107,10 @@ static std::pair<Image, Image> gradient(Image const &img, unsigned gauss = 0) {
     GaussianBlur(grad.second, grad.second, cv::Size(3, 3), 0);
   }
 
+#ifdef PRINT_META
   cv::imwrite("/Users/ivan/.supp/code/snakes/grad_x.jpg", grad.first);
   cv::imwrite("/Users/ivan/.supp/code/snakes/grad_y.jpg", grad.second);
-
+#endif
   return grad;
 }
 
@@ -134,12 +135,11 @@ static Image hessian(Image const &img, unsigned gauss = 0) {
   for (int k = 0; k < gauss; ++k) {
     GaussianBlur(hessian, hessian, cv::Size(3, 3), 0);
   }
+#ifdef PRINT_META
   cv::imwrite("/Users/ivan/.supp/code/snakes/hess.jpg", hessian);
-
+#endif
   return hessian;
 }
-
-std::string Snake::image_path() { return img_path; }
 
 void Snake::set_xs(std::vector<double> _xs) { xs = _xs; }
 
@@ -169,6 +169,20 @@ std::vector<double> Snake::get_xs() const { return xs; }
 
 std::vector<double> Snake::get_ys() const { return ys; }
 
+void Snake::update_raw_img() {
+  cv::Mat raw_mat(img.size(), CV_8UC4);
+  cv::cvtColor(img, raw_mat, CV_BGR2RGBA, 4);
+  cv::imencode(".bmp", raw_mat, raw_img);
+}
+
+void *Snake::get_raw_img() {
+  return raw_img.data();
+}
+
+std::size_t Snake::get_raw_img_size() {
+  return raw_img_size;
+}
+
 bool Snake::is_closed() { return closed; }
 
 int Snake::get_implicit() { return implicit; }
@@ -184,20 +198,7 @@ Snake::Snake(std::string json_file_path) {
 
   auto json = json11::Json::parse(json_string, err_text);
 
-  img_path = json["img_path"].string_value();
-  img = cv::imread(img_path);
-
-  if (!img.data) {
-    std::cout << "Could not open or find the image specified in config.\n";
-    std::exit(0);
-  }
-
-  grad = gradient(img, 1);
-  save_double_heat_map(grad.first, "/Users/ivan/.supp/code/snakes/hgx.jpg");
-  save_double_heat_map(grad.second, "/Users/ivan/.supp/code/snakes/hgy.jpg");
-
-  hess = hessian(img, 1);
-  save_double_heat_map(hess, "/Users/ivan/.supp/code/snakes/hh.jpg");
+  std::string vid_path = json["vid_path"].string_value();
 
   tension     = json["tension"].number_value();
   stiffness   = json["stiffness"].number_value();
@@ -210,13 +211,49 @@ Snake::Snake(std::string json_file_path) {
   tick        = json["tick"].number_value();
   fixed       = json["fixed"].bool_value();
   threshold   = json["threshold"].number_value();
+  
+  vid = cv::VideoCapture(vid_path);
+  
+  if(!vid.isOpened()) {
+    std::cout << "Could not open or find the video specified in config.\n";
+    std::exit(0);
+  }
+  
+  img = cv::Mat(vid.get(CV_CAP_PROP_FRAME_HEIGHT), vid.get(CV_CAP_PROP_FRAME_WIDTH), vid.get(CV_CAP_PROP_FORMAT));
+  
+  raw_img_size = img.total() * 4;
+  raw_img = std::vector<uchar>(raw_img_size);
+  
+  if (!next_frame()) {
+    std::cout << "Could not read the frame.\n";
+    std::exit(0);
+  }
+}
 
+bool Snake::next_frame() {
+  if (!vid.read(img)) {
+    return false;
+  }
+  update_raw_img();
+  
+  grad = gradient(img, 1);
+  hess = hessian(img, 1);
+  
+#ifdef PRINT_META
+  save_double_heat_map(grad.first, "/Users/ivan/.supp/code/snakes/hgx.jpg");
+  save_double_heat_map(grad.second, "/Users/ivan/.supp/code/snakes/hgy.jpg");
+  save_double_heat_map(hess, "/Users/ivan/.supp/code/snakes/hh.jpg");
+# endif
   abs_threshold(grad.first, threshold);
   abs_threshold(grad.second, threshold);
   abs_threshold(hess, threshold);
+  
+#ifdef PRINT_META
   save_double_heat_map(grad.first, "/Users/ivan/.supp/code/snakes/thgx.jpg");
   save_double_heat_map(grad.second, "/Users/ivan/.supp/code/snakes/thgy.jpg");
   save_double_heat_map(hess, "/Users/ivan/.supp/code/snakes/thh.jpg");
+#endif
+  return true;
 }
 
 /**
