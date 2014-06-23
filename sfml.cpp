@@ -37,21 +37,26 @@ void sfml_loop(Snake &snake) {
     // iteration of the loop
     sf::Event event;
     while (window.pollEvent(event)) {
-      if (event.type == sf::Event::Closed)
+      if (event.type == sf::Event::Closed) {
         window.close();
+      }
 
-      if (event.type == sf::Event::MouseMoved)
-        if (!inited)
+      if (event.type == sf::Event::MouseMoved) {
+        if (!inited) {
           snake_scheme.back().position =
               sf::Vector2f(sf::Mouse::getPosition(window));
+        }
+      }
 
-      if (event.type == sf::Event::MouseButtonPressed)
-        if (!inited)
+      if (event.type == sf::Event::MouseButtonPressed) {
+        if (!inited) {
           snake_scheme.insert(
               snake_scheme.end() - 1,
               sf::Vertex(sf::Vector2f(sf::Mouse::getPosition(window)),
                          sf::Color::Red));
-
+        }
+      }
+      
       if (event.type == sf::Event::KeyPressed && snake_scheme.size() > 2) {
         if (event.key.code == sf::Keyboard::Escape) {
           window.close();
