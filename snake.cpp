@@ -9,6 +9,7 @@
 #include <utility>
 #include <string>
 #include <fstream>
+#include <iostream>
 #include <streambuf>
 #include "json11.hpp"
 #include "snake.h"
