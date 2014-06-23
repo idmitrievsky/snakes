@@ -265,9 +265,26 @@ bool Snake::update() {
 
   forced_xs += x_dist;
   forced_ys += y_dist;
-
+  
+//  std::vector<double> prev_xs(xs), prev_ys(ys);
+  
   xs = (cv::Mat)(pentamat * forced_xs);
   ys = (cv::Mat)(pentamat * forced_ys);
-
+  
+//  double acc_x = 0, acc_y = 0;
+//  double eps = ???;
+//  
+//  for (int k = 0; k < nodes; ++k)
+//  {
+//    acc_x += xs[k] - prev_xs[k];
+//    acc_y += ys[k] - prev_ys[k];
+//  }
+//  acc_x += acc_y; acc_x /= tick;
+//  
+//  if (std::abs(acc_x) < eps)
+//  {
+//    return true;
+//  }
+  
   return false;
 }
